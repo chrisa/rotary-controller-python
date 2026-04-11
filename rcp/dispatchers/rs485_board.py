@@ -8,6 +8,8 @@ from rcp.dispatchers.base_board import BaseBoard
 from rcp.utils.communication import ConnectionManager
 
 from kivy.logger import Logger
+
+from rcp.utils.devices import SCALES_COUNT
 log = Logger.getChild(__name__)
 
 
@@ -15,7 +17,7 @@ class RS485Board(BaseBoard):
     device = ObjectProperty(None, allownone=True)
 
     def __init__(self, formats, offset_provider, **kv):
-        super().__init__(formats, offset_provider, **kv)
+        super().__init__(formats, offset_provider, SCALES_COUNT, **kv)
 
         serial_port = config.getdefault("device", "serial_port", "/dev/serial0")
         baudrate = int(config.getdefault("device", "baudrate", 115200))

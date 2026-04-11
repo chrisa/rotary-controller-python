@@ -13,6 +13,7 @@ from rcp.dispatchers.saving_dispatcher import read_settings
 from rcp.dispatchers.servo import ServoDispatcher
 
 from kivy.logger import Logger
+
 log = Logger.getChild(__name__)
 
 
@@ -25,14 +26,14 @@ class BaseBoard(EventDispatcher):
     inputs = ListProperty()
     axes = ListProperty()
 
-    def __init__(self, formats, offset_provider, **kv):
+    def __init__(self, formats, offset_provider, scales_count, **kv):
         super().__init__(**kv)
         self.formats = formats
         self.offset_provider = offset_provider
         self.fast_data_values = dict()
 
         self.servo = ServoDispatcher(board=self, formats=formats, id_override="0")
-        for i in range(4):
+        for i in range(scales_count):
             self.inputs.append(InputDispatcher(
                 board=self, inputIndex=i, id_override=f"{i}",
             ))
