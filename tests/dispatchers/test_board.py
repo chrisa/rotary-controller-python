@@ -4,7 +4,7 @@ import pytest
 
 from tests.dispatchers.conftest import MockFormats, MockOffsetProvider
 from rcp.dispatchers.axis import AxisDispatcher
-from rcp.dispatchers.board import Board
+from rcp.dispatchers.rs485_board import RS485Board
 from rcp.dispatchers.input import InputDispatcher
 from rcp.dispatchers.servo import ServoDispatcher
 
@@ -25,12 +25,12 @@ def board(formats, offset_provider, tmp_path, monkeypatch):
         "rcp.dispatchers.saving_dispatcher.Path.home",
         lambda: tmp_path,
     )
-    with patch("rcp.dispatchers.board.ConnectionManager") as MockCM, \
-         patch("rcp.dispatchers.board.Clock"):
+    with patch("rcp.dispatchers.rs485_board.ConnectionManager") as MockCM, \
+         patch("rcp.dispatchers.base_board.Clock"):
         mock_cm = MagicMock()
         mock_cm.__getitem__ = MagicMock(return_value=MagicMock())
         MockCM.return_value = mock_cm
-        b = Board(formats=formats, offset_provider=offset_provider)
+        b = RS485Board(formats=formats, offset_provider=offset_provider)
     return b
 
 

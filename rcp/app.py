@@ -9,7 +9,7 @@ log = Logger.getChild(__name__)
 
 from rcp.components.appsettings import config
 from rcp.dispatchers.axis import AxisDispatcher
-from rcp.dispatchers.board import Board
+from rcp.dispatchers.rs485_board import RS485Board
 from rcp.dispatchers.els import ElsDispatcher
 from rcp.dispatchers.formats import FormatsDispatcher
 from rcp.dispatchers.input import InputDispatcher
@@ -93,7 +93,7 @@ class MainApp(App):
 
     def build(self):
         self.formats = FormatsDispatcher(id_override="0")
-        self.board = Board(formats=self.formats, offset_provider=self)
+        self.board = RS485Board(formats=self.formats, offset_provider=self)
 
         if not self.formats.disable_error_reporting:
             log.info("Error reporting is enabled, configuring Sentry")
