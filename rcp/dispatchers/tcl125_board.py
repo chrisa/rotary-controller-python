@@ -20,7 +20,7 @@ class TCL125Board(BaseBoard):
         pid = int(config.getdefault("device", "pid", 0x000A))
 
         self.client = FredUsbClient(vid, pid)
-        self.client.enable_polling(period_ms=25)
+        self.client.enable_polling(period_ms=33)
         self.device = {
             "scales": [
                 {
@@ -35,13 +35,14 @@ class TCL125Board(BaseBoard):
             ]
         }
         self.connected = True
+        self.cycles = 0
 
     def update(self, *args):
         # client.refresh() -> 
         # {'x_mm': -5.96, 'z_mm': 1.3, 'spindle_rpm': 1870, 'x_counts': -298, 'z_counts': 130, 'tick': 3430, 'flags': 1}
         try:
-            v = self.client.refresh()
-            log.debug(v)
+            v = self.client.next_snapshot()
+            log.info(v)
             self.fast_data_values = {
                 "scaleCurrent": [
                     v["spindle_rpm"],
@@ -54,13 +55,13 @@ class TCL125Board(BaseBoard):
                     0,
                 ],
                 "servoMode": 0,
-                "cycles": 0,
+                "cycles": self.cycles,
                 "servoCurrent": 0,
                 "servoDesired": 0,
                 "servoEnable": 0,
                 "servoSpeed": 0,
                 "stepsToGo": 0,
-                "executionInterval": 0,
+                "executionInterval": 3000000,
             }
         except Exception as e:
             self.task_update.timeout = 1.0
@@ -68,3 +69,4 @@ class TCL125Board(BaseBoard):
             return
         
         self.update_tick = (self.update_tick + 1) % 100
+        self.cycles = self.cycles + 1
